@@ -57,7 +57,6 @@ namespace transparent_button_00
             { 
                 captureBackground();
             }
-            Task.Delay(5000).GetAwaiter().OnCompleted(() => OnMouseHover(EventArgs.Empty));
         }
 
         [Browsable(false)]
