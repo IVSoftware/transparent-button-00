@@ -1,10 +1,17 @@
-One way to make something "invisible" is to paint its surface to look like what's behind it. To experiment with this, start with a main form that has a background image as a `Stretch` layout. Then overlay a `TableLayoutPanel` whose job it is to keep the button scaled correctly as the form resizes and could for the basis for some image-mapping.  Finally, place an instance of `TransparentButton` in one of the cells. Here are the steps in the form designer:
+One way to make something "invisible" is to paint its surface to look like what's behind it. To experiment with this, add a `BackgroundImage` to main form with a `Stretch` layout. Then overlay a `TableLayoutPanel` whose job it is to keep the button scaled correctly as the form resizes. This has the potential to be used for image-mapping the background.  
 
-![designer]()
+An instance of `TransparentButton` is now placed in one of the cells. Here are the steps in the form designer:
 
+**Design Mode**
+
+[![designer][1]][1]
+
+***
 The `TransparentButton` class responds to `SizeChanged` events by capturing a bitmap of the designated HostControl. At runtime, the `OnPaint` method draws the background where the button is supposed to be. But even though it's "invisible", clicking on the camoflauged button still raises the click. The code below is a proof of concept only. One would definitely want to do more rigorous testing than I have.
 
+**Runtime**
 
+[![runtime][2]][2]
 
     class TransparentButton : Button
     {
@@ -16,7 +23,6 @@ The `TransparentButton` class responds to `SizeChanged` events by capturing a bi
             { 
                 captureBackground();
             }
-            Task.Delay(5000).GetAwaiter().OnCompleted(() => OnMouseHover(EventArgs.Empty));
         }
 
 This property provides some flexibility for where the background is clipped.
@@ -118,10 +124,10 @@ Tool tip
         private static ToolTip ToolTip { get; } = new ToolTip();
     }
 
-    ***
-    **Test**
+***
+**Test**
 
-    Here's the code I used to test this answer. 
+Here's the code I used to test this answer. 
 
     enum HostForTesting
     {
@@ -167,3 +173,7 @@ Tool tip
             }
         }
     }
+
+
+  [1]: https://i.stack.imgur.com/XYlWr.png
+  [2]: https://i.stack.imgur.com/EDIAi.png
