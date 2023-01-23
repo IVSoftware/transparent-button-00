@@ -23,7 +23,6 @@ namespace transparent_button_00
             {
                 case HostForTesting.MainForm:
                     buttonTransparent.HostContainer = this;
-                    transparentButton1.HostContainer = this;
                     break;
                 case HostForTesting.TableLayoutPanel:
                     tableLayoutPanel.BackgroundImage = BackgroundImage;
@@ -32,7 +31,6 @@ namespace transparent_button_00
                     break;
             }
             buttonTransparent.Click += onClickTransparent;
-            transparentButton1.Click += onClickTransparent;
         }
         private void onClickTransparent(object? sender, EventArgs e)
         {

@@ -30,7 +30,6 @@
         {
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.buttonTransparent = new transparent_button_00.TransparentButton();
-            this.transparentButton1 = new transparent_button_00.TransparentButton();
             this.tableLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -41,7 +40,6 @@
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 54.1841F));
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45.8159F));
             this.tableLayoutPanel.Controls.Add(this.buttonTransparent, 0, 1);
-            this.tableLayoutPanel.Controls.Add(this.transparentButton1, 1, 1);
             this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel.Name = "tableLayoutPanel";
@@ -64,19 +62,6 @@
             this.buttonTransparent.Text = "Transparent Button";
             this.buttonTransparent.UseVisualStyleBackColor = true;
             // 
-            // transparentButton1
-            // 
-            this.transparentButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.transparentButton1.HostContainer = null;
-            this.transparentButton1.Location = new System.Drawing.Point(262, 54);
-            this.transparentButton1.Name = "transparentButton1";
-            this.transparentButton1.Size = new System.Drawing.Size(213, 80);
-            this.transparentButton1.TabIndex = 3;
-            this.transparentButton1.Text = "Transparent Button";
-            this.transparentButton1.UseVisualStyleBackColor = true;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
@@ -96,6 +81,5 @@
         #endregion
         private TransparentButton buttonTransparent;
         private TableLayoutPanel tableLayoutPanel;
-        private TransparentButton transparentButton1;
     }
 }
