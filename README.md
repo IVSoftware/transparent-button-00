@@ -1,13 +1,16 @@
-One way to make something "invisible" is to paint its surface to look like what's behind it. To experiment with this, add a `BackgroundImage` to main form with a `Stretch` layout. Then overlay a `TableLayoutPanel` whose job it is to keep the button scaled correctly as the form resizes. This has the potential to be used for image-mapping the background.  
+Basic rule of camouflage - one way to make something "invisible" is to paint its surface to look like what's behind it. As a proof of concept, the `TransparentButton` class shown below responds to `SizeChanged` events by capturing a bitmap of the designated HostControl that it would otherwise be obscured. 
+
+***
+**Design Mode**
+
+To experiment with this, add a `BackgroundImage` to main form with a `Stretch` layout. Then overlay a `TableLayoutPanel` whose job it is to keep the button scaled correctly as the form resizes. This has the potential to be used for image-mapping the background.  
 
 An instance of `TransparentButton` is now placed in one of the cells. Here are the steps in the form designer:
-
-**Design Mode**
 
 [![designer][1]][1]
 
 ***
-The `TransparentButton` class responds to `SizeChanged` events by capturing a bitmap of the designated HostControl. At runtime, the `OnPaint` method draws the background where the button is supposed to be. But even though it's "invisible", clicking on the camoflauged button still raises the click. The code below is a proof of concept only. One would definitely want to do more rigorous testing than I have.
+At runtime, the `OnPaint` method draws the background where the button is supposed to be. But even though it's "invisible", clicking on the camoflauged button still raises the click. The code below is a proof of concept only. *"Your mileage may vary."* One would definitely want to do more rigorous testing than I have.
 
 **Runtime**
 
