@@ -1,5 +1,6 @@
-As anyone who has ever had to cloak a starship knows, one way to make something look invisible is to paint its surface to look like what's behind it.
+As anyone who has ever had to cloak a starship knows, one way to make something "invisible" is to paint its surface to look like what's behind it.
 
+Here's an example of a class that responds to `SizeChanged` events by capturing a bitmap of the designated HostControl.
 
     class TransparentButton : Button
     {
@@ -13,9 +14,6 @@ As anyone who has ever had to cloak a starship knows, one way to make something 
             }
             Task.Delay(5000).GetAwaiter().OnCompleted(() => OnMouseHover(EventArgs.Empty));
         }
-
-
-
         Control? _hostContainer = null;
         public Control? HostContainer
         {
@@ -34,25 +32,25 @@ As anyone who has ever had to cloak a starship knows, one way to make something 
         }
         private void captureBackground()
         {
-            if (_hostContainer != null)
+            if (HostContainer != null)
             {
                 // Hide this button before drawing
                 Visible = false;
 
                 // Draw the full container
-                var tmp = (Bitmap)new Bitmap(_hostContainer.Width, _hostContainer.Height);
-                _hostContainer.DrawToBitmap(tmp, new Rectangle(0, 0, _hostContainer.Width, _hostContainer.Height));
+                var tmp = (Bitmap)new Bitmap(HostContainer.Width, HostContainer.Height);
+                HostContainer.DrawToBitmap(tmp, new Rectangle(0, 0, HostContainer.Width, HostContainer.Height));
 
                 // S A V E    f o r    D E B U G
                 // tmp.Save("tmp.bmp");
                 // Process.Start("explorer.exe", "tmp.bmp");
 
-                if(_hostContainer is Form form)
+                if(HostContainer is Form form)
                 {
-                    var ptScreen = _hostContainer.PointToScreen(_hostContainer.ClientRectangle.Location);
+                    var ptScreen = HostContainer.PointToScreen(HostContainer.ClientRectangle.Location);
                     var ptOffset = new Point(
-                        ptScreen.X - _hostContainer.Location.X,
-                        ptScreen.Y - _hostContainer.Location.Y);
+                        ptScreen.X - HostContainer.Location.X,
+                        ptScreen.Y - HostContainer.Location.Y);
 
                     var clipBounds = new Rectangle(Location.X + ptOffset.X, Location.Y + ptOffset.Y, Width, Height);
                     _chameleon = tmp.Clone(
@@ -98,12 +96,15 @@ As anyone who has ever had to cloak a starship knows, one way to make something 
         {
             base.OnMouseHover(e);
             var client = PointToClient(MousePosition);
-            ToolTip.Show(
-                "Mouse is over an invisible button!",
-                this,
-                new Point(client.X + 10, client.Y - 25),
-                1000
-            );
+            if (!IsDisposed)
+            {
+                ToolTip.Show(
+                    "Mouse is over an invisible button!",
+                    this,
+                    new Point(client.X + 10, client.Y - 25),
+                    1000
+                );
+            }
         }
         private static ToolTip ToolTip { get; } = new ToolTip();
     }
