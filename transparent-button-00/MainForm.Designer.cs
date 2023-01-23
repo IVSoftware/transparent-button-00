@@ -55,7 +55,7 @@
             this.buttonTransparent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonTransparent.hostContainer = null;
+            this.buttonTransparent.HostContainer = null;
             this.buttonTransparent.Location = new System.Drawing.Point(3, 54);
             this.buttonTransparent.Name = "buttonTransparent";
             this.buttonTransparent.Size = new System.Drawing.Size(253, 80);

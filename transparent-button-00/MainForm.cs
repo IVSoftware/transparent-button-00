@@ -3,18 +3,48 @@ using System.Diagnostics;
 
 namespace transparent_button_00
 {
+    enum HostForTesting
+    {
+        MainForm,
+        TableLayoutPanel,
+    }
     public partial class MainForm : Form
     {
         public MainForm() => InitializeComponent();
+
+        // Determine which control to use for the background.
+        HostForTesting HostForTesting => HostForTesting.MainForm;
+       
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            buttonTransparent.hostContainer = this;
+
+            switch (HostForTesting)
+            {
+                case HostForTesting.MainForm:
+                    buttonTransparent.HostContainer = this;
+                    break;
+                case HostForTesting.TableLayoutPanel:
+                    tableLayoutPanel.BackgroundImage = BackgroundImage;
+                    tableLayoutPanel.BackgroundImageLayout = BackgroundImageLayout;
+                    buttonTransparent.HostContainer = tableLayoutPanel;
+                    break;
+            }
             buttonTransparent.Click += onClickTransparent;
         }
         private void onClickTransparent(object? sender, EventArgs e)
         {
             MessageBox.Show("Clicked!");
+        }
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                // https://stackoverflow.com/a/36352503/5438626
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000;  // Turn on WS_EX_COMPOSITED
+                return cp;
+            }
         }
     }
     class TransparentButton : Button
@@ -30,7 +60,7 @@ namespace transparent_button_00
             Task.Delay(5000).GetAwaiter().OnCompleted(() => OnMouseHover(EventArgs.Empty));
         }
         Control? _hostContainer = null;
-        public Control? hostContainer
+        public Control? HostContainer
         {
             get => _hostContainer;
             set
@@ -47,28 +77,37 @@ namespace transparent_button_00
         }
         private void captureBackground()
         {
-            if (_hostContainer != null)
+            if (HostContainer != null)
             {
                 // Hide this button before drawing
                 Visible = false;
 
                 // Draw the full container
-                var tmp = (Bitmap)new Bitmap(_hostContainer.Width, _hostContainer.Height);
-                _hostContainer.DrawToBitmap(tmp, new Rectangle(0, 0, _hostContainer.Width, _hostContainer.Height));
+                var tmp = (Bitmap)new Bitmap(HostContainer.Width, HostContainer.Height);
+                HostContainer.DrawToBitmap(tmp, new Rectangle(0, 0, HostContainer.Width, HostContainer.Height));
 
                 // S A V E    f o r    D E B U G
-                //tmp.Save("tmp.bmp");
-                //Process.Start("explorer.exe", "tmp.bmp");
+                // tmp.Save("tmp.bmp");
+                // Process.Start("explorer.exe", "tmp.bmp");
 
-                var ptScreen = _hostContainer.PointToScreen(_hostContainer.ClientRectangle.Location);
-                var ptOffset = new Point(
-                    ptScreen.X - _hostContainer.Location.X,
-                    ptScreen.Y - _hostContainer.Location.Y);
+                if(HostContainer is Form form)
+                {
+                    var ptScreen = HostContainer.PointToScreen(HostContainer.ClientRectangle.Location);
+                    var ptOffset = new Point(
+                        ptScreen.X - HostContainer.Location.X,
+                        ptScreen.Y - HostContainer.Location.Y);
 
-                var clipBounds = new Rectangle(Location.X + ptOffset.X, Location.Y + ptOffset.Y, Width, Height);
-                _chameleon = tmp.Clone(
-                    clipBounds, 
-                    System.Drawing.Imaging.PixelFormat.DontCare);
+                    var clipBounds = new Rectangle(Location.X + ptOffset.X, Location.Y + ptOffset.Y, Width, Height);
+                    _chameleon = tmp.Clone(
+                        clipBounds, 
+                        System.Drawing.Imaging.PixelFormat.DontCare);
+                }
+                else
+                {
+                    _chameleon = tmp.Clone(
+                        Bounds,
+                        System.Drawing.Imaging.PixelFormat.DontCare);
+                }
 
                 // S A V E    f o r    D E B U G
                 //_chameleon.Save("chm.bmp");
@@ -102,12 +141,15 @@ namespace transparent_button_00
         {
             base.OnMouseHover(e);
             var client = PointToClient(MousePosition);
-            ToolTip.Show(
-                "Mouse is over an invisible button!",
-                this,
-                new Point(client.X + 10, client.Y - 25),
-                1000
-            );
+            if (!IsDisposed)
+            {
+                ToolTip.Show(
+                    "Mouse is over an invisible button!",
+                    this,
+                    new Point(client.X + 10, client.Y - 25),
+                    1000
+                );
+            }
         }
         private static ToolTip ToolTip { get; } = new ToolTip();
     }
