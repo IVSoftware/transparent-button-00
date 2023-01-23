@@ -27,6 +27,7 @@ namespace transparent_button_00
             { 
                 captureBackground();
             }
+            Task.Delay(5000).GetAwaiter().OnCompleted(() => OnMouseHover(EventArgs.Empty));
         }
         Control? _hostContainer = null;
         public Control? hostContainer
