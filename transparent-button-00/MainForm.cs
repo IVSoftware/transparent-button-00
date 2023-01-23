@@ -23,6 +23,7 @@ namespace transparent_button_00
             {
                 case HostForTesting.MainForm:
                     buttonTransparent.HostContainer = this;
+                    transparentButton1.HostContainer = this;
                     break;
                 case HostForTesting.TableLayoutPanel:
                     tableLayoutPanel.BackgroundImage = BackgroundImage;
@@ -31,6 +32,7 @@ namespace transparent_button_00
                     break;
             }
             buttonTransparent.Click += onClickTransparent;
+            transparentButton1.Click += onClickTransparent;
         }
         private void onClickTransparent(object? sender, EventArgs e)
         {
@@ -59,7 +61,9 @@ namespace transparent_button_00
             }
             Task.Delay(5000).GetAwaiter().OnCompleted(() => OnMouseHover(EventArgs.Empty));
         }
-        Control? _hostContainer = null;
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Control? HostContainer
         {
             get => _hostContainer;
@@ -75,6 +79,7 @@ namespace transparent_button_00
                 }
             }
         }
+        Control? _hostContainer = null;
         private void captureBackground()
         {
             if (HostContainer != null)
@@ -126,14 +131,18 @@ namespace transparent_button_00
             }
             else
             {
-                if (_chameleon == null)
+                // Important to check this when there are mutliple controls
+                if (HostContainer != null) 
                 {
-                    Debug.WriteLine(false, "Expecting background image");
-                    base.OnPaint(e);
-                }
-                else
-                {
-                    e.Graphics.DrawImage(_chameleon, new Point());
+                    if (_chameleon == null)
+                    {
+                        Debug.WriteLine(false, "Expecting background image");
+                        base.OnPaint(e);
+                    }
+                    else
+                    {
+                        e.Graphics.DrawImage(_chameleon, new Point());
+                    }
                 }
             }
         }
