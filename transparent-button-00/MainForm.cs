@@ -34,7 +34,7 @@ namespace transparent_button_00
         }
         private void onClickTransparent(object? sender, EventArgs e)
         {
-            MessageBox.Show($"{((Control)sender).Name} Clicked!");
+            MessageBox.Show("Clicked!");
         }
         protected override CreateParams CreateParams
         {

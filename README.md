@@ -1,4 +1,4 @@
-As anyone who has ever had to cloak a starship knows, one way to make something "invisible" is to paint its surface to look like what's behind it.
+As anyone who has ever had to cloak a starship knows, one way to make something "invisible" is to paint its surface to look like what's behind it. To experiment with this, start with a main form that has a background image as a `Stretch` layout. Then overlay a `TableLayoutPanel` whose job it is to keep the button scaled correctly as the form resizes. Finally, place an instance of `TransparentButton` in one of the cells.
 
 Here's an example of a class that responds to `SizeChanged` events by capturing a bitmap of the designated HostControl.
 
