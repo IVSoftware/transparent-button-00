@@ -20,24 +20,22 @@ namespace transparent_button_00
             buttonTransparent.ForeColor= Color.White;
             buttonTransparent.Click += onClickTransparent;
         }
-        private void onClickTransparent(object? sender, EventArgs e)
-        {
+        private void onClickTransparent(object? sender, EventArgs e) =>
             MessageBox.Show("Clicked!");
-        }
         protected override CreateParams CreateParams
         {
             get
             {
+                const int WS_EX_COMPOSITED = 0x02000000;
                 // https://stackoverflow.com/a/36352503/5438626
                 CreateParams cp = base.CreateParams;
-                cp.ExStyle |= 0x02000000;  // Turn on WS_EX_COMPOSITED
+                cp.ExStyle |= WS_EX_COMPOSITED;
                 return cp;
             }
         }
     }
     class TransparentButton : Button
     {
-        int _wdtCount = 0;
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
