@@ -141,6 +141,10 @@ namespace transparent_button_00
                         e.Graphics.DrawImage(_chameleon, new Point());
                     }
                 }
+                using (var brush = new SolidBrush(Color.White))
+                {
+                    e.Graphics.DrawString(Text, Font, brush, new PointF(10, 10));
+                }
             }
         }
         protected override void OnMouseHover(EventArgs e)
