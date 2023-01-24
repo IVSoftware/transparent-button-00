@@ -1,182 +1,95 @@
-Basic rule of camouflage - one way to make something "invisible" is to paint its surface to look like what's behind it. As a proof of concept, the `TransparentButton` class shown below responds to `SizeChanged` events by capturing a bitmap of the designated HostControl that it would otherwise be obscured. 
+This `TransparentButton` improves on my previous answer. It no longer requires an override to `OnPaint` and uses _no_ custom drawing whatsoever. What I missed the first time is to simply set the `Button.BackgroundImage` to the camouflage bitmap. 
+
+[![runtime][1]][1]
+
+Requirements:
+- Create a button with transparent background.
+- Do it _without_ drawing the background manually.
+- Keep the `Button.FlatStyle` as `FlatStyle.Standard`.
+- Do not disturb the rounded edges of the standard button.
 
 ***
-**Design Mode**
-
-To experiment with this, add a `BackgroundImage` to main form with a `Stretch` layout. Then overlay a `TableLayoutPanel` whose job it is to keep the button scaled correctly as the form resizes. This has the potential to be used for image-mapping the background.  
-
-An instance of `TransparentButton` is now placed in one of the cells. Here are the steps in the form designer:
-
-[![designer][1]][1]
-
-***
-At runtime, the `OnPaint` method draws the background where the button is supposed to be. But even though it's "invisible", clicking on the camoflauged button still raises the click. The code below is a proof of concept only. *"Your mileage may vary."* One would definitely want to do more rigorous testing than I have.
-
-**Runtime**
-
-[![runtime][2]][2]
 
     class TransparentButton : Button
     {
-        int _wdtCount = 0;
+        public void SetParentForm(Form form)
+        {
+            _parentForm= form;
+            captureBackground();
+        }
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
-            if (!(DesignMode || _hostContainer == null)) 
-            { 
-                captureBackground();
-            }
+            captureBackground();
         }
-
-This property provides some flexibility for where the background is clipped.
-
-        Control? _hostContainer = null;
-        public Control? HostContainer
-        {
-            get => _hostContainer;
-            set
-            {
-                if (!Equals(_hostContainer, value))
-                {
-                    _hostContainer = value;
-                    if (_hostContainer != null)
-                    {
-                        captureBackground();
-                    }
-                }
-            }
-        }
-
-Take a snapshot of the background.
-
-        private Bitmap? _chameleon = null;
+        Form? _parentForm = null;
         private void captureBackground()
         {
-            if (HostContainer != null)
+            if (!(DesignMode || _parentForm == null))
             {
                 // Hide this button before drawing
                 Visible = false;
 
                 // Draw the full container
-                var tmp = (Bitmap)new Bitmap(HostContainer.Width, HostContainer.Height);
-                HostContainer.DrawToBitmap(tmp, new Rectangle(0, 0, HostContainer.Width, HostContainer.Height));
-                
-                if(HostContainer is Form form)
-                {
-                    // Metrics are a little trickier because ClientRectangle
-                    // is offset from the location and smaller than width/height.
-                    var ptScreen = HostContainer.PointToScreen(HostContainer.ClientRectangle.Location);
-                    var ptOffset = new Point(
-                        ptScreen.X - HostContainer.Location.X,
-                        ptScreen.Y - HostContainer.Location.Y);
+                var tmp = (Bitmap)new Bitmap(_parentForm.Width, _parentForm.Height);
+                _parentForm.DrawToBitmap(tmp, new Rectangle(0, 0, _parentForm.Width, _parentForm.Height));
+                var ptScreen = _parentForm.PointToScreen(_parentForm.ClientRectangle.Location);
+                var ptOffset = new Point(
+                    ptScreen.X - _parentForm.Location.X,
+                    ptScreen.Y - _parentForm.Location.Y);
 
-                    var clipBounds = new Rectangle(Location.X + ptOffset.X, Location.Y + ptOffset.Y, Width, Height);
-                    _chameleon = tmp.Clone(
-                        clipBounds, 
-                        System.Drawing.Imaging.PixelFormat.DontCare);
-                }
-                else
-                {
-                    _chameleon = tmp.Clone(
-                        Bounds,
-                        System.Drawing.Imaging.PixelFormat.DontCare);
-                }
+                var clipBounds = new Rectangle(Location.X + ptOffset.X, Location.Y + ptOffset.Y, Width, Height);
+                BackgroundImage = tmp.Clone(
+                    clipBounds, 
+                    System.Drawing.Imaging.PixelFormat.DontCare);
+
                 // Show this button.
                 Visible = true;
             }
         }
-
-Do not call the base class Paint. Draw the snipped image instead.
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            if (DesignMode)
-            {
-                base.OnPaint(e);
-            }
-            else
-            {
-                if (_chameleon == null)
-                {
-                    Debug.WriteLine(false, "Expecting background image");
-                    base.OnPaint(e);
-                }
-                else
-                {
-                    e.Graphics.DrawImage(_chameleon, new Point());
-                }
-            }
-        }
-
-Tool tip
-
-        protected override void OnMouseHover(EventArgs e)
-        {
-            base.OnMouseHover(e);
-            var client = PointToClient(MousePosition);
-            if (!IsDisposed)
-            {
-                ToolTip.Show(
-                    "Mouse is over an invisible button!",
-                    this,
-                    new Point(client.X + 10, client.Y - 25),
-                    1000
-                );
-            }
-        }
-        private static ToolTip ToolTip { get; } = new ToolTip();
     }
+
+
+
+
+***
+**Design Mode Example**
+
+Main form `BackgroundImage` to main form with a `Stretch` layout. Then overlay a `TableLayoutPanel` whose job it is to keep the button scaled correctly as the form resizes. `TransparentButton` is now placed in one of the cells. 
+
+[![designer][2]][2]
 
 ***
 **Test**
 
-Here's the code I used to test this answer. 
+Here's the code I used to test this answer: 
 
-    enum HostForTesting
-    {
-        MainForm,
-        TableLayoutPanel,
-    }
     public partial class MainForm : Form
     {
-        public MainForm() => InitializeComponent();
-
-        // Determine which control to use for the background.
-        HostForTesting HostForTesting => HostForTesting.MainForm;
-       
+        public MainForm() => InitializeComponent();       
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
-            switch (HostForTesting)
-            {
-                case HostForTesting.MainForm:
-                    buttonTransparent.HostContainer = this;
-                    break;
-                case HostForTesting.TableLayoutPanel:
-                    tableLayoutPanel.BackgroundImage = BackgroundImage;
-                    tableLayoutPanel.BackgroundImageLayout = BackgroundImageLayout;
-                    buttonTransparent.HostContainer = tableLayoutPanel;
-                    break;
-            }
+            buttonTransparent.FlatStyle= FlatStyle.Standard;
+            buttonTransparent.SetParentForm(this);
+            buttonTransparent.ForeColor= Color.White;
             buttonTransparent.Click += onClickTransparent;
         }
-        private void onClickTransparent(object? sender, EventArgs e)
-        {
+        private void onClickTransparent(object? sender, EventArgs e) =>
             MessageBox.Show("Clicked!");
-        }
         protected override CreateParams CreateParams
         {
             get
             {
+                const int WS_EX_COMPOSITED = 0x02000000;
                 // https://stackoverflow.com/a/36352503/5438626
                 CreateParams cp = base.CreateParams;
-                cp.ExStyle |= 0x02000000;  // Turn on WS_EX_COMPOSITED
+                cp.ExStyle |= WS_EX_COMPOSITED;
                 return cp;
             }
         }
     }
 
 
-  [1]: https://i.stack.imgur.com/XYlWr.png
-  [2]: https://i.stack.imgur.com/EDIAi.png
+  [1]: https://i.stack.imgur.com/0w60t.png
+  [2]: https://i.stack.imgur.com/XYlWr.png
