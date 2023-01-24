@@ -11,25 +11,13 @@ namespace transparent_button_00
     public partial class MainForm : Form
     {
         public MainForm() => InitializeComponent();
-
-        // Determine which control to use for the background.
-        HostForTesting HostForTesting => HostForTesting.MainForm;
        
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
-            switch (HostForTesting)
-            {
-                case HostForTesting.MainForm:
-                    buttonTransparent.HostContainer = this;
-                    break;
-                case HostForTesting.TableLayoutPanel:
-                    tableLayoutPanel.BackgroundImage = BackgroundImage;
-                    tableLayoutPanel.BackgroundImageLayout = BackgroundImageLayout;
-                    buttonTransparent.HostContainer = tableLayoutPanel;
-                    break;
-            }
+            buttonTransparent.FlatStyle= FlatStyle.Standard;
+            buttonTransparent.SetParentForm(this);
+            buttonTransparent.ForeColor= Color.White;
             buttonTransparent.Click += onClickTransparent;
         }
         private void onClickTransparent(object? sender, EventArgs e)
@@ -53,67 +41,33 @@ namespace transparent_button_00
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
-            if (!(DesignMode || _hostContainer == null)) 
-            { 
-                captureBackground();
-            }
+            captureBackground();
         }
-
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Control? HostContainer
+        public void SetParentForm(Form form)
         {
-            get => _hostContainer;
-            set
-            {
-                if (!Equals(_hostContainer, value))
-                {
-                    _hostContainer = value;
-                    if (_hostContainer != null)
-                    {
-                        captureBackground();
-                    }
-                }
-            }
+            _parentForm= form;
+            captureBackground();
         }
-        Control? _hostContainer = null;
+        Form? _parentForm = null;
         private void captureBackground()
         {
-            if (HostContainer != null)
+            if (!(DesignMode || _parentForm == null))
             {
                 // Hide this button before drawing
                 Visible = false;
 
                 // Draw the full container
-                var tmp = (Bitmap)new Bitmap(HostContainer.Width, HostContainer.Height);
-                HostContainer.DrawToBitmap(tmp, new Rectangle(0, 0, HostContainer.Width, HostContainer.Height));
+                var tmp = (Bitmap)new Bitmap(_parentForm.Width, _parentForm.Height);
+                _parentForm.DrawToBitmap(tmp, new Rectangle(0, 0, _parentForm.Width, _parentForm.Height));
+                var ptScreen = _parentForm.PointToScreen(_parentForm.ClientRectangle.Location);
+                var ptOffset = new Point(
+                    ptScreen.X - _parentForm.Location.X,
+                    ptScreen.Y - _parentForm.Location.Y);
 
-                // S A V E    f o r    D E B U G
-                // tmp.Save("tmp.bmp");
-                // Process.Start("explorer.exe", "tmp.bmp");
-
-                if(HostContainer is Form form)
-                {
-                    var ptScreen = HostContainer.PointToScreen(HostContainer.ClientRectangle.Location);
-                    var ptOffset = new Point(
-                        ptScreen.X - HostContainer.Location.X,
-                        ptScreen.Y - HostContainer.Location.Y);
-
-                    var clipBounds = new Rectangle(Location.X + ptOffset.X, Location.Y + ptOffset.Y, Width, Height);
-                    BackgroundImage = tmp.Clone(
-                        clipBounds, 
-                        System.Drawing.Imaging.PixelFormat.DontCare);
-                }
-                else
-                {
-                    BackgroundImage = tmp.Clone(
-                        Bounds,
-                        System.Drawing.Imaging.PixelFormat.DontCare);
-                }
-
-                // S A V E    f o r    D E B U G
-                //_chameleon.Save("chm.bmp");
-                //Process.Start("explorer.exe", "chm.bmp");
+                var clipBounds = new Rectangle(Location.X + ptOffset.X, Location.Y + ptOffset.Y, Width, Height);
+                BackgroundImage = tmp.Clone(
+                    clipBounds, 
+                    System.Drawing.Imaging.PixelFormat.DontCare);
 
                 // Show this button.
                 Visible = true;
