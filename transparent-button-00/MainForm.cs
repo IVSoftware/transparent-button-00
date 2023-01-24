@@ -100,13 +100,13 @@ namespace transparent_button_00
                         ptScreen.Y - HostContainer.Location.Y);
 
                     var clipBounds = new Rectangle(Location.X + ptOffset.X, Location.Y + ptOffset.Y, Width, Height);
-                    _chameleon = tmp.Clone(
+                    BackgroundImage = tmp.Clone(
                         clipBounds, 
                         System.Drawing.Imaging.PixelFormat.DontCare);
                 }
                 else
                 {
-                    _chameleon = tmp.Clone(
+                    BackgroundImage = tmp.Clone(
                         Bounds,
                         System.Drawing.Imaging.PixelFormat.DontCare);
                 }
@@ -119,48 +119,5 @@ namespace transparent_button_00
                 Visible = true;
             }
         }
-        private Bitmap? _chameleon = null;
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            if (DesignMode)
-            {
-                base.OnPaint(e);
-            }
-            else
-            {
-                // Important to check this when there are mutliple controls
-                if (HostContainer != null) 
-                {
-                    if (_chameleon == null)
-                    {
-                        Debug.WriteLine(false, "Expecting background image");
-                        base.OnPaint(e);
-                    }
-                    else
-                    {
-                        e.Graphics.DrawImage(_chameleon, new Point());
-                    }
-                }
-                using (var brush = new SolidBrush(Color.White))
-                {
-                    e.Graphics.DrawString(Text, Font, brush, new PointF(10, 10));
-                }
-            }
-        }
-        protected override void OnMouseHover(EventArgs e)
-        {
-            base.OnMouseHover(e);
-            var client = PointToClient(MousePosition);
-            if (!IsDisposed)
-            {
-                ToolTip.Show(
-                    "Mouse is over an invisible button!",
-                    this,
-                    new Point(client.X + 10, client.Y - 25),
-                    1000
-                );
-            }
-        }
-        private static ToolTip ToolTip { get; } = new ToolTip();
     }
 }
