@@ -1,10 +1,10 @@
-This `TransparentButton` improves on my previous answer. It no longer requires an override to `OnPaint` and uses _no_ custom drawing whatsoever. What I missed the first time is to simply set the `Button.BackgroundImage` to the camouflage bitmap. 
+This edited `TransparentButton` improves on my previous answer. It no longer requires an override to `OnPaint` and uses _no_ custom drawing whatsoever. What I missed the first time is to simply set the `Button.BackgroundImage` to the camouflage bitmap. 
 
 [![runtime][1]][1]
 
 Requirements:
 - Create a button with transparent background.
-- Do it _without_ drawing the background manually.
+- Do it _without_ drawing the background manually in `OnPaint`.
 - Keep the `Button.FlatStyle` as `FlatStyle.Standard`.
 - Do not disturb the rounded edges of the standard button.
 
@@ -12,18 +12,18 @@ Requirements:
 
     class TransparentButton : Button
     {
-        public void SetParentForm(Form form)
-        {
-            _parentForm= form;
-            captureBackground();
-        }
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
-            captureBackground();
+            Refresh();
+        }
+        public void SetParentForm(Form form)
+        {
+            _parentForm= form;
+            Refresh();
         }
         Form? _parentForm = null;
-        private void captureBackground()
+        public new void Refresh()
         {
             if (!(DesignMode || _parentForm == null))
             {
@@ -46,12 +46,9 @@ Requirements:
                 // Show this button.
                 Visible = true;
             }
+            base.Refresh();
         }
     }
-
-
-
-
 ***
 **Design Mode Example**
 

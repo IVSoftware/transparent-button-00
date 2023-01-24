@@ -39,15 +39,15 @@ namespace transparent_button_00
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
-            captureBackground();
+            Refresh();
         }
         public void SetParentForm(Form form)
         {
             _parentForm= form;
-            captureBackground();
+            Refresh();
         }
         Form? _parentForm = null;
-        private void captureBackground()
+        public new void Refresh()
         {
             if (!(DesignMode || _parentForm == null))
             {
@@ -70,6 +70,7 @@ namespace transparent_button_00
                 // Show this button.
                 Visible = true;
             }
+            base.Refresh();
         }
     }
 }
