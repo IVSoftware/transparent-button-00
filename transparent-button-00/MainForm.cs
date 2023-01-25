@@ -28,16 +28,17 @@ namespace transparent_button_00
             #endregion G L Y P H
 
             buttonTransparent.FlatStyle= FlatStyle.Standard;
-            //buttonTransparent.Click += onClickTransparent;
 
             buttonTransparent.MouseDown += onMoveableMouseDown;
             buttonTransparent.MouseMove += onMoveableMouseMove;
 
             path = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Documents", "Document.rtf");
-            richTextBox1.Rtf = File.ReadAllText(path);
+            richTextBox.Rtf = File.ReadAllText(path);
+            richTextBox.Refreshed += (sender, e) =>
+            {
+                BeginInvoke(() => buttonTransparent.Refresh());
+            };
         }
-        private void onClickTransparent(object? sender, EventArgs e) =>
-            MessageBox.Show("Clicked!");
         protected override CreateParams CreateParams
         {
             get
@@ -83,6 +84,30 @@ namespace transparent_button_00
                 }
             }
         }
+    }
+    class RichTextBoxEx : RichTextBox
+    {
+        const int WM_PAINT = 0x000F;
+        SemaphoreSlim _once = new SemaphoreSlim(1, 1);
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+            if(m.Msg.Equals(WM_PAINT)) 
+            {
+                try
+                {
+                    if(_once.Wait(0))
+                    {
+                        Refreshed?.Invoke(this, EventArgs.Empty);
+                    }
+                }
+                finally
+                {
+                    _once.Release();
+                }
+            }
+        }
+        public event EventHandler Refreshed;
     }
     class TransparentButton : Button
     {        

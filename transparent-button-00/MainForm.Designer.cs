@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.buttonTransparent = new transparent_button_00.TransparentButton();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.richTextBox = new RichTextBoxEx();
             this.SuspendLayout();
             // 
             // buttonTransparent
@@ -46,12 +46,12 @@
             // 
             // richTextBox1
             // 
-            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox1.Location = new System.Drawing.Point(0, 0);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(978, 644);
-            this.richTextBox1.TabIndex = 8;
-            this.richTextBox1.Text = "";
+            this.richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.richTextBox.Location = new System.Drawing.Point(0, 0);
+            this.richTextBox.Name = "richTextBox1";
+            this.richTextBox.Size = new System.Drawing.Size(978, 644);
+            this.richTextBox.TabIndex = 8;
+            this.richTextBox.Text = "";
             // 
             // MainForm
             // 
@@ -60,7 +60,7 @@
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(978, 644);
             this.Controls.Add(this.buttonTransparent);
-            this.Controls.Add(this.richTextBox1);
+            this.Controls.Add(this.richTextBox);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Main Form";
@@ -70,6 +70,6 @@
 
         #endregion
         private TransparentButton buttonTransparent;
-        private RichTextBox richTextBox1;
+        private RichTextBoxEx richTextBox;
     }
 }
