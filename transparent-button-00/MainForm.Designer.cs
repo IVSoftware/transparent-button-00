@@ -48,7 +48,7 @@
             this.richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.richTextBox.Location = new System.Drawing.Point(0, 0);
             this.richTextBox.Name = "richTextBox";
-            this.richTextBox.Size = new System.Drawing.Size(978, 644);
+            this.richTextBox.Size = new System.Drawing.Size(978, 744);
             this.richTextBox.TabIndex = 8;
             this.richTextBox.Text = "";
             // 
@@ -57,7 +57,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(978, 644);
+            this.ClientSize = new System.Drawing.Size(978, 744);
             this.Controls.Add(this.buttonTransparent);
             this.Controls.Add(this.richTextBox);
             this.Name = "MainForm";
