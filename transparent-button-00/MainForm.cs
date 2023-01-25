@@ -33,7 +33,11 @@ namespace transparent_button_00
             buttonTransparent.MouseMove += onMoveableMouseMove;
             buttonTransparent.Click += (sender, e) =>
             {
-                if (!_isControlMoved) MessageBox.Show("Clicked!");
+                if (!_isControlMoved)
+                {
+                    MessageBox.Show("Clicked!");
+                    buttonTransparent.RestartWDT();
+                }
             };
 
             path = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Documents", "Document.rtf");
