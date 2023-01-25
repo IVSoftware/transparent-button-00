@@ -126,7 +126,7 @@ Here's the code I used to test the basic transparent button as shown over a back
 ***
 **Revision 2.0 Demo**
 
-I've uploaded a [demo](https://github.com/IVSoftware/transparent-button-00.git) to my GitHub repo that has a draggable, clickable transparent button over a RichTextBox control.
+The Master commit now demonstrates a draggable, clickable transparent button over a RichTextBox control.
 
 
   [1]: https://i.stack.imgur.com/PrYWw.png
