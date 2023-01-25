@@ -31,6 +31,10 @@ namespace transparent_button_00
 
             buttonTransparent.MouseDown += onMoveableMouseDown;
             buttonTransparent.MouseMove += onMoveableMouseMove;
+            buttonTransparent.Click += (sender, e) =>
+            {
+                if (!_isControlMoved) MessageBox.Show("Clicked!");
+            };
 
             path = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Documents", "Document.rtf");
             richTextBox.Rtf = File.ReadAllText(path);
@@ -42,7 +46,10 @@ namespace transparent_button_00
                 }
                 _mousePrev = MousePosition;
             };
-            richTextBox.MouseWheel += (sender, e) =>buttonTransparent.RestartWDT(TimeSpan.FromSeconds(1));
+            richTextBox.VScroll += (sender, e) =>
+            {
+                buttonTransparent.RestartWDT();
+            };
         }
         Point _mousePrev = new Point(int.MaxValue, int.MaxValue);
         protected override CreateParams CreateParams
@@ -62,9 +69,11 @@ namespace transparent_button_00
             _mouseDownScreen = new Point(),
             _mouseDelta = new Point(),
             _controlDownPoint = new Point();
+        bool _isControlMoved = false;
 
         private void onMoveableMouseDown(object? sender, MouseEventArgs e)
         {
+            _isControlMoved = false;
             if (sender is Control control)
             {
                 _mouseDownScreen = control.PointToScreen(e.Location);
@@ -86,6 +95,7 @@ namespace transparent_button_00
                     if (!control.Location.Equals(newControlLocation))
                     {
                         control.Location = newControlLocation;
+                        _isControlMoved = true;
                     }
                 }
             }
@@ -150,7 +160,7 @@ namespace transparent_button_00
         internal void RestartWDT(TimeSpan? timeSpan = null)
         {
             var captureCount = ++_wdtCount;
-            var delay = timeSpan ?? TimeSpan.FromMilliseconds(25);
+            var delay = timeSpan ?? TimeSpan.FromMilliseconds(250);
             Task
                 .Delay(delay)
                 .GetAwaiter()

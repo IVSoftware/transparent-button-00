@@ -34,7 +34,6 @@
             // 
             // buttonTransparent
             // 
-            this.buttonTransparent.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.buttonTransparent.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(22)))), ((int)(((byte)(22)))));
             this.buttonTransparent.ForeColor = System.Drawing.Color.SeaGreen;
             this.buttonTransparent.Location = new System.Drawing.Point(12, 60);
@@ -44,11 +43,11 @@
             this.buttonTransparent.Text = "Transparent Button";
             this.buttonTransparent.UseVisualStyleBackColor = true;
             // 
-            // richTextBox1
+            // richTextBox
             // 
             this.richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.richTextBox.Location = new System.Drawing.Point(0, 0);
-            this.richTextBox.Name = "richTextBox1";
+            this.richTextBox.Name = "richTextBox";
             this.richTextBox.Size = new System.Drawing.Size(978, 644);
             this.richTextBox.TabIndex = 8;
             this.richTextBox.Text = "";
