@@ -138,7 +138,7 @@ namespace transparent_button_00
                     BeginInvoke(async () =>
                     {
                         Parent?.Refresh();
-                        if (isInitial) await Task.Delay(100);
+                        if (isInitial) await Task.Delay(250);
                         using (var graphics = Graphics.FromImage(BackgroundImage))
                         {
                             graphics.CopyFromScreen(PointToScreen(new Point()), new Point(), Size);

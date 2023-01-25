@@ -1,4 +1,4 @@
-This edited `TransparentButton` improves on my previous answer and no longer overrides to `OnPaint`. It requires _no_ custom drawing. Instead, it uses `Graphics.CopyFromScreen` to make a screenshot of the rectangle that is behind it and sets its `Button.BackgroundImage` to the snipped image. This way it's effectively camouflaged and appears transparent while still drawing as a Standard styled button.
+This edited `TransparentButton` improves on my previous answer and no longer overrides to `OnPaint`. It requires no custom drawing. Instead, it uses `Graphics.CopyFromScreen` to make a screenshot of the rectangle that is behind it and sets its own `Button.BackgroundImage` to the snipped bitmap. This way it's effectively camouflaged and appears transparent while still drawing as a Standard styled button.
 
 [![runtime][1]][1]
 
@@ -41,7 +41,7 @@ Requirements:
                     BeginInvoke(async () =>
                     {
                         Parent?.Refresh();
-                        if (isInitial) await Task.Delay(100);
+                        if (isInitial) await Task.Delay(250);
                         using (var graphics = Graphics.FromImage(BackgroundImage))
                         {
                             graphics.CopyFromScreen(PointToScreen(new Point()), new Point(), Size);
@@ -96,17 +96,18 @@ Here's the code I used to test this answer:
 
     public partial class MainForm : Form
     {
-        public MainForm() => InitializeComponent();       
+        public MainForm() => InitializeComponent();
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            buttonTransparent.FlatStyle= FlatStyle.Standard;
-            buttonTransparent.SetParentForm(this);
-            buttonTransparent.ForeColor= Color.White;
+            buttonTransparent.ForeColor = Color.White;
             buttonTransparent.Click += onClickTransparent;
         }
-        private void onClickTransparent(object? sender, EventArgs e) =>
+        private void onClickTransparent(object? sender, EventArgs e)
+        {
             MessageBox.Show("Clicked!");
+            buttonTransparent.RestartWDT();
+        }
         protected override CreateParams CreateParams
         {
             get
@@ -120,6 +121,12 @@ Here's the code I used to test this answer:
         }
     }
 
+***
+**Revision 2.0 Demo**
+
+[![clickable-draggable-over-richtextbox][3]][3]
+
 
   [1]: https://i.stack.imgur.com/0w60t.png
   [2]: https://i.stack.imgur.com/XYlWr.png
+  [3]: https://i.stack.imgur.com/PrYWw.png
