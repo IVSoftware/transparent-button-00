@@ -15,8 +15,6 @@ namespace transparent_button_00
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            buttonTransparent.FlatStyle= FlatStyle.Standard;
-            buttonTransparent.SetParentForm(this);
             buttonTransparent.ForeColor= Color.White;
             buttonTransparent.Click += onClickTransparent;
         }
@@ -36,41 +34,57 @@ namespace transparent_button_00
     }
     class TransparentButton : Button
     {
-        protected override void OnSizeChanged(EventArgs e)
+        public TransparentButton() => Paint += (sender, e) =>
         {
-            base.OnSizeChanged(e);
-            Refresh();
-        }
-        public void SetParentForm(Form form)
-        {
-            _parentForm= form;
-            Refresh();
-        }
-        Form? _parentForm = null;
+            // Detect size/location changes
+            if ((Location != _prevLocation) || (Size != _prevSize))
+            {
+                Refresh();
+            }
+            _prevLocation = Location;
+            _prevSize = Size;
+        };
+
+        Point _prevLocation = new Point(int.MaxValue, int.MaxValue);
+        Size _prevSize = new Size(int.MaxValue, int.MaxValue);
+
         public new void Refresh()
         {
-            if (!(DesignMode || _parentForm == null))
+            if (!DesignMode)
             {
-                // Hide this button before drawing
-                Visible = false;
-
-                // Draw the full container
-                var tmp = (Bitmap)new Bitmap(_parentForm.Width, _parentForm.Height);
-                _parentForm.DrawToBitmap(tmp, new Rectangle(0, 0, _parentForm.Width, _parentForm.Height));
-                var ptScreen = _parentForm.PointToScreen(_parentForm.ClientRectangle.Location);
-                var ptOffset = new Point(
-                    ptScreen.X - _parentForm.Location.X,
-                    ptScreen.Y - _parentForm.Location.Y);
-
-                var clipBounds = new Rectangle(Location.X + ptOffset.X, Location.Y + ptOffset.Y, Width, Height);
-                BackgroundImage = tmp.Clone(
-                    clipBounds, 
-                    System.Drawing.Imaging.PixelFormat.DontCare);
-
-                // Show this button.
-                Visible = true;
+                bool isInitial = false;
+                if ((BackgroundImage == null) || !BackgroundImage.Size.Equals(Size))
+                {
+                    isInitial = true;
+                    BackgroundImage = new Bitmap(Width, Height);
+                }
+                if (MouseButtons.Equals(MouseButtons.None))
+                {
+                    // Hide button, take screenshot, show button again
+                    Visible = false;
+                    BeginInvoke(async () =>
+                    {
+                        Parent?.Refresh();
+                        if (isInitial) await Task.Delay(100);
+                        using (var graphics = Graphics.FromImage(BackgroundImage))
+                        {
+                            graphics.CopyFromScreen(PointToScreen(new Point()), new Point(), Size);
+                        }
+                        Visible = true;
+                    });
+                }
+                else
+                {
+                    using (var graphics = Graphics.FromImage(BackgroundImage))
+                        graphics.FillRectangle(Brushes.LightGray, graphics.ClipBounds);
+                }
             }
-            base.Refresh();
+            else base.Refresh();
+        }
+        protected override void OnMouseUp(MouseEventArgs mevent)
+        {
+            base.OnMouseUp(mevent);
+            Refresh();
         }
     }
 }
