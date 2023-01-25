@@ -28,59 +28,48 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.buttonTransparent = new transparent_button_00.TransparentButton();
-            this.tableLayoutPanel.SuspendLayout();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
-            // 
-            // tableLayoutPanel
-            // 
-            this.tableLayoutPanel.BackColor = System.Drawing.Color.Transparent;
-            this.tableLayoutPanel.ColumnCount = 2;
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 54.1841F));
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45.8159F));
-            this.tableLayoutPanel.Controls.Add(this.buttonTransparent, 0, 1);
-            this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel.Name = "tableLayoutPanel";
-            this.tableLayoutPanel.RowCount = 3;
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 17.34694F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 29.2517F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 53.40136F));
-            this.tableLayoutPanel.Size = new System.Drawing.Size(478, 294);
-            this.tableLayoutPanel.TabIndex = 1;
             // 
             // buttonTransparent
             // 
-            this.buttonTransparent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonTransparent.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.buttonTransparent.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(22)))), ((int)(((byte)(22)))));
-            this.buttonTransparent.Location = new System.Drawing.Point(3, 54);
+            this.buttonTransparent.ForeColor = System.Drawing.Color.SeaGreen;
+            this.buttonTransparent.Location = new System.Drawing.Point(12, 60);
             this.buttonTransparent.Name = "buttonTransparent";
-            this.buttonTransparent.Size = new System.Drawing.Size(253, 80);
-            this.buttonTransparent.TabIndex = 2;
+            this.buttonTransparent.Size = new System.Drawing.Size(175, 80);
+            this.buttonTransparent.TabIndex = 7;
             this.buttonTransparent.Text = "Transparent Button";
             this.buttonTransparent.UseVisualStyleBackColor = true;
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.richTextBox1.Location = new System.Drawing.Point(0, 0);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(978, 644);
+            this.richTextBox1.TabIndex = 8;
+            this.richTextBox1.Text = "";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::transparent_button_00.Properties.Resources.background;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(478, 294);
-            this.Controls.Add(this.tableLayoutPanel);
+            this.ClientSize = new System.Drawing.Size(978, 644);
+            this.Controls.Add(this.buttonTransparent);
+            this.Controls.Add(this.richTextBox1);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Main Form";
-            this.tableLayoutPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
         private TransparentButton buttonTransparent;
-        private TableLayoutPanel tableLayoutPanel;
+        private RichTextBox richTextBox1;
     }
 }

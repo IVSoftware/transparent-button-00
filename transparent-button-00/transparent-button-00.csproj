@@ -12,6 +12,7 @@
   <ItemGroup>
     <Folder Include="Images\" />
     <Folder Include="Fonts\" />
+    <Folder Include="Documents\" />
     <Folder Include="Screenshots\" />
   </ItemGroup>
 
@@ -31,6 +32,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Documents\Document.rtf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Fonts\glyphs.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
