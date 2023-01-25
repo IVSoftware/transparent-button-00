@@ -89,8 +89,6 @@ Main form `BackgroundImage` to main form with a `Stretch` layout. Then overlay a
 
 [![designer][2]][2]
 
-**Runtime**
-
 [![runtime][3]][3]
 
 ***
@@ -125,7 +123,12 @@ Here's the code I used to test this answer:
         }
     }
 
+***
+**Revision 2.0 Demo**
+
+I've uploaded a [demo](https://github.com/IVSoftware/transparent-button-00.git) to my GitHub repo that has a draggable, clickable transparent button over a RichTextBox control.
+
 
   [1]: https://i.stack.imgur.com/PrYWw.png
   [2]: https://i.stack.imgur.com/XYlWr.png
-  [3]: https://i.stack.imgur.com/9qWUm.png
+  [3]: https://i.stack.imgur.com/3BfNe.png
