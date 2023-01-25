@@ -1,6 +1,6 @@
 This edited `TransparentButton` improves on my previous answer and no longer overrides to `OnPaint`. It requires no custom drawing. Instead, it uses `Graphics.CopyFromScreen` to make a screenshot of the rectangle that is behind it and sets its own `Button.BackgroundImage` to the snipped bitmap. This way it's effectively camouflaged and appears transparent while still drawing as a Standard styled button.
 
-[![runtime][1]][1]
+[![clickable-draggable-over-richtextbox][1]][1]
 
 Requirements:
 - Create a button with transparent background.
@@ -89,6 +89,10 @@ Main form `BackgroundImage` to main form with a `Stretch` layout. Then overlay a
 
 [![designer][2]][2]
 
+**Runtime**
+
+[![runtime][3]][3]
+
 ***
 **Test**
 
@@ -121,12 +125,7 @@ Here's the code I used to test this answer:
         }
     }
 
-***
-**Revision 2.0 Demo**
 
-[![clickable-draggable-over-richtextbox][3]][3]
-
-
-  [1]: https://i.stack.imgur.com/0w60t.png
+  [1]: https://i.stack.imgur.com/PrYWw.png
   [2]: https://i.stack.imgur.com/XYlWr.png
-  [3]: https://i.stack.imgur.com/PrYWw.png
+  [3]: https://i.stack.imgur.com/9qWUm.png
