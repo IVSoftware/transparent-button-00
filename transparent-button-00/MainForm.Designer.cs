@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.buttonTransparent = new transparent_button_00.TransparentButton();
-            this.richTextBox = new RichTextBoxEx();
+            this.richTextBox = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // buttonTransparent
@@ -70,6 +70,6 @@
 
         #endregion
         private TransparentButton buttonTransparent;
-        private RichTextBoxEx richTextBox;
+        private RichTextBox richTextBox;
     }
 }

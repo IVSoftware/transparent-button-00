@@ -34,11 +34,17 @@ namespace transparent_button_00
 
             path = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Documents", "Document.rtf");
             richTextBox.Rtf = File.ReadAllText(path);
-            richTextBox.Refreshed += (sender, e) =>
+            richTextBox.MouseMove += (sender, e) =>
             {
-                BeginInvoke(() => buttonTransparent.Refresh());
+                if(!MousePosition.Equals(_mousePrev))
+                {
+                    buttonTransparent.RestartWDT();
+                }
+                _mousePrev = MousePosition;
             };
+            richTextBox.MouseWheel += (sender, e) =>buttonTransparent.RestartWDT(TimeSpan.FromSeconds(1));
         }
+        Point _mousePrev = new Point(int.MaxValue, int.MaxValue);
         protected override CreateParams CreateParams
         {
             get
@@ -84,30 +90,6 @@ namespace transparent_button_00
                 }
             }
         }
-    }
-    class RichTextBoxEx : RichTextBox
-    {
-        const int WM_PAINT = 0x000F;
-        SemaphoreSlim _once = new SemaphoreSlim(1, 1);
-        protected override void WndProc(ref Message m)
-        {
-            base.WndProc(ref m);
-            if(m.Msg.Equals(WM_PAINT)) 
-            {
-                try
-                {
-                    if(_once.Wait(0))
-                    {
-                        Refreshed?.Invoke(this, EventArgs.Empty);
-                    }
-                }
-                finally
-                {
-                    _once.Release();
-                }
-            }
-        }
-        public event EventHandler Refreshed;
     }
     class TransparentButton : Button
     {        
@@ -162,6 +144,24 @@ namespace transparent_button_00
         {
             base.OnMouseUp(mevent);
             Refresh();
+        }
+
+        int _wdtCount = 0;
+        internal void RestartWDT(TimeSpan? timeSpan = null)
+        {
+            var captureCount = ++_wdtCount;
+            var delay = timeSpan ?? TimeSpan.FromMilliseconds(25);
+            Task
+                .Delay(delay)
+                .GetAwaiter()
+                .OnCompleted(() => 
+                {
+                    if(captureCount.Equals(_wdtCount))
+                    {
+                        Debug.WriteLine($"WDT {delay}");
+                        Refresh();
+                    }
+                });
         }
     }
 }
