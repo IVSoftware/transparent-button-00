@@ -159,23 +159,23 @@ namespace transparent_button_00
             base.OnMouseUp(mevent);
             Refresh();
         }
-
-        int _wdtCount = 0;
+        /// <summary>
+        /// Refresh after a watchdog time delay. For example
+        /// in response to parent control mouse moves.
+        /// </summary>  
         internal void RestartWDT(TimeSpan? timeSpan = null)
         {
             var captureCount = ++_wdtCount;
             var delay = timeSpan ?? TimeSpan.FromMilliseconds(250);
-            Task
-                .Delay(delay)
-                .GetAwaiter()
-                .OnCompleted(() => 
+            Task.Delay(delay).GetAwaiter().OnCompleted(() =>
+            {
+                if (captureCount.Equals(_wdtCount))
                 {
-                    if(captureCount.Equals(_wdtCount))
-                    {
-                        Debug.WriteLine($"WDT {delay}");
-                        Refresh();
-                    }
-                });
+                    Debug.WriteLine($"WDT {delay}");
+                    Refresh();
+                }
+            });
         }
+        int _wdtCount = 0;
     }
 }

@@ -1,4 +1,4 @@
-This edited `TransparentButton` improves on my previous answer. It no longer requires an override to `OnPaint` and uses _no_ custom drawing whatsoever. What I missed the first time is to simply set the `Button.BackgroundImage` to the camouflage bitmap. 
+This edited `TransparentButton` improves on my previous answer and no longer overrides to `OnPaint`. It requires _no_ custom drawing. Instead, it uses `Graphics.CopyFromScreen` to make a screenshot of the rectangle that is behind it and sets its `Button.BackgroundImage` to the snipped image. This way it's effectively camouflaged and appears transparent while still drawing as a Standard styled button.
 
 [![runtime][1]][1]
 
@@ -10,7 +10,7 @@ Requirements:
 
 ***
 
-     class TransparentButton : Button
+    class TransparentButton : Button
     {        
         public TransparentButton() => Paint += (sender, e) =>
         {
@@ -22,10 +22,8 @@ Requirements:
             _prevLocation = Location;
             _prevSize = Size;
         };
-
         Point _prevLocation = new Point(int.MaxValue, int.MaxValue);
         Size _prevSize = new Size(int.MaxValue, int.MaxValue);
-
         public new void Refresh()
         {
             if (!DesignMode)
@@ -64,24 +62,24 @@ Requirements:
             base.OnMouseUp(mevent);
             Refresh();
         }
-
-        int _wdtCount = 0;
+        /// <summary>
+        /// Refresh after a watchdog time delay. For example
+        /// in response to parent control mouse moves.
+        /// </summary>  
         internal void RestartWDT(TimeSpan? timeSpan = null)
         {
             var captureCount = ++_wdtCount;
             var delay = timeSpan ?? TimeSpan.FromMilliseconds(250);
-            Task
-                .Delay(delay)
-                .GetAwaiter()
-                .OnCompleted(() => 
+            Task.Delay(delay).GetAwaiter().OnCompleted(() =>
+            {
+                if (captureCount.Equals(_wdtCount))
                 {
-                    if(captureCount.Equals(_wdtCount))
-                    {
-                        Debug.WriteLine($"WDT {delay}");
-                        Refresh();
-                    }
-                });
+                    Debug.WriteLine($"WDT {delay}");
+                    Refresh();
+                }
+            });
         }
+        int _wdtCount = 0;
     }
 
 ***
